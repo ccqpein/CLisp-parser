@@ -11,6 +11,7 @@
   (cond ((equal char #\()
 	 ;:= could use tail recursive
 	 (cons (gensym) symbol-stack))
+	(t symbol-stack)
 	))
 
 
@@ -18,8 +19,8 @@
   (let ((stack '()))
     (loop 
        for c in code
-       do (setf stack (match-char c stack))
-	 )
+       do (progn (setf stack (match-char c stack))
+		 (print stack)))
     stack))
 
 
