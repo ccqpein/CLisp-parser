@@ -1,5 +1,6 @@
 (defvar *test* "(a b (c))")
 (defvar *test1* "(a b (c d (e 4))")
+(defvar *test2* "( ( aa (a) a aa ))))")
 
 ;;:= parser may not need symbol table.
 ;; symbol table using in compiling to find symbol scope
@@ -23,4 +24,4 @@
 		 (print stack)))
     stack))
 
-
+(defun )
