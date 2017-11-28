@@ -17,11 +17,25 @@
 
 
 (defun scan-code-block (code)
-  (let ((stack '()))
-    (loop 
-       for c in code
-       do (progn (setf stack (match-char c stack))
-		 (print stack)))
-    stack))
-
-(defun )
+  (loop
+     with result = '()
+     with temp = '()
+     with last = nil
+     for c across code
+     do (cond ((or (eql #\( c) (eql #\) c))
+	       (if (not (eql last nil))
+		   (setf result (append result (list (concatenate 'string temp) c))
+			 temp nil
+			 last nil)
+		   (setf result (append result (list c))
+			 last nil
+			 )))
+	      ((eql #\  c)
+	       (if (not (eql last nil))
+		   (setf result (append result (list (concatenate 'string temp)))
+			 temp nil
+			 last nil)))
+	      (t
+	       (setf temp (append temp (list c))
+		     last c)))
+     finally (return-from scan-code-block result)))
