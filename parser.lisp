@@ -20,6 +20,12 @@
 	  (cdr elis)
 	  (cdr stack)
 	  table
+	  dep))
+	(t
+	 (scan-and-update-scope
+	  (cdr elis)
+	  stack
+	  (setf (gethash (car stack) table) (append (gethash (car stack) table) (list (car elis))))
 	  dep))))
 
 (defun scan-code-block (code)
