@@ -5,22 +5,22 @@
 
 (defvar *scope-table* (make-hash-table))
 (defvar *scope-dependency-table* (make-hash-table))
-(defvar *scope-stack* '("Adam"))
+(defvar *scope-stack* (list (make-symbol "Adam")))
 
 (defun scan-and-update-scope (elis stack table dep)
   ; stack no side effection
   (print (list elis stack table dep))
   (cond ((eql nil elis)
 	 nil)
-	((eql #\( (car elis))
+	((eql #\( (car elis)) ;; need more test
 	 (scan-and-update-scope
 	  (cdr elis)
-	  (progn (setf stack (push (symbol-name (gensym)) stack))
-		 (setf (gethash (cadr stack) table) (append (gethash (cadr stack) table) (list (car stack))))
+	  (progn (setf stack (push (gensym) stack))
+		 (setf (gethash (symbol-name (cadr stack)) table) (append (gethash (symbol-name (cadr stack)) table) (list (car stack))))
 		 stack)
-	  (progn (setf (gethash (car stack) table) '())
+	  (progn (setf (gethash (symbol-name (car stack)) table) '())
 		 table)
-	  (progn (setf (gethash (car stack) dep) (append (gethash (car stack) dep) (list (car stack))))
+	  (progn (setf (gethash (symbol-name (car stack)) dep) (append (gethash (symbol-name (car stack)) dep) (list (car stack))))
 		 dep)))
 	((eql #\) (car elis))
 	 (scan-and-update-scope
@@ -32,7 +32,7 @@
 	 (scan-and-update-scope
 	  (cdr elis)
 	  stack
-	  (progn (setf (gethash (car stack) table) (append (gethash (car stack) table) (list (car elis))))
+	  (progn (setf (gethash (symbol-name (car stack)) table) (append (gethash (symbol-name (car stack)) table) (list (car elis))))
 		 table)
 	  dep))))
 
@@ -64,6 +64,7 @@
 
 (setf *scope-table* (make-hash-table)
       *scope-dependency-table* (make-hash-table)
+      *scope-stack* (list (make-symbol "Adam"))
 )
 (scan-and-update-scope (scan-code-block *test1*)
 		       *scope-stack*
