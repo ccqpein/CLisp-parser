@@ -9,40 +9,42 @@
 (defvar *scope-stack* (list (make-symbol "Adam")))
 
 
-(defun update-list-in-hashtabe (key table &rest eles)
-  (setf (gethash key table)
-	(append (gethash key table) eles)))
+(defun update-list-in-hashtabe (key table &optional (all nil) &rest eles)
+  (if all
+      (setf (gethash key table)
+	 (append (gethash key table) all))
+      (setf (gethash key table)
+	 (append (gethash key table) eles))))
 
+;; maybe recursive do not have good expressiveness here.
 (defun scan-and-update-scope (elis stack table dep)
   (cond ((eql nil elis)
-	 stack)   ; setf no side effect, so return stack to keep stack state
+	 stack) ; setf no side effect, so return stack to keep stack state
 	((eql #\( (car elis)) ;; need more test
-	 (scan-and-update-scope
-	  (cdr elis)
-	  (progn
-	    (setf stack (push (gensym) stack))
-	    (update-list-in-hashtabe (symbol-name (cadr stack)) table (car stack))
-	    stack) ; need some other function
-	  (progn
-	    (setf (gethash (symbol-name (car stack)) table) '())
-	    table)
-	  (progn 
-	    (update-list-in-hashtabe (symbol-name (cadr stack)) dep (car stack))
-	    dep)))
+	 (scan-and-update-scope (cdr elis)
+				(progn
+				  (setf stack (push (gensym) stack))
+				  (update-list-in-hashtabe (symbol-name (cadr stack)) table (car stack))
+				  stack) ; need some other function
+				(progn
+				  (setf (gethash (symbol-name (car stack)) table) '())
+				  table)
+				(progn
+				  ;;:= DEBUG
+				  (update-list-in-hashtabe (symbol-name (car stack)) dep (cdr stack))
+				  dep)))
 	((eql #\) (car elis))
-	 (scan-and-update-scope
-	  (cdr elis)
-	  (cdr stack)
-	  table
-	  dep))
+	 (scan-and-update-scope (cdr elis)
+				(cdr stack)
+				table
+				dep))
 	(t
-	 (scan-and-update-scope
-	  (cdr elis)
-	  stack
-	  (progn 
-	    (update-list-in-hashtabe (symbol-name (car stack)) table (car elis))
-	    table)
-	  dep))))
+	 (scan-and-update-scope (cdr elis)
+				stack
+				(progn 
+				  (update-list-in-hashtabe (symbol-name (car stack)) table (car elis))
+				  table)
+				dep))))
 
 (defun scan-code-block (code)
   "cut code to a list including all symbol/word"
@@ -74,7 +76,7 @@
       *scope-dependency-table* (make-hash-table :test 'equal)
       *scope-stack* (list (make-symbol "Adam"))
 )
-(scan-and-update-scope (scan-code-block *test3*)
+(scan-and-update-scope (scan-code-block *test2*)
 		       *scope-stack*
 		       *scope-table*
 		       *scope-dependency-table*)
