@@ -24,5 +24,5 @@
 				   *scope-dependency-table*)))
 ))
 
-
+; debug scan-code-block
 ;(read-code "./parser.lisp")

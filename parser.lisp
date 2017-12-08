@@ -59,8 +59,12 @@
      with result = '()
      with temp = '()
      with last = nil
+     with in-str-flag = nil
      for c across code
-     do (cond ((or (eql #\( c) (eql #\) c))
+     do (cond (in-str-flag
+	       (setf temp (append temp (list c))
+		     last c))
+	      ((or (eql #\( c) (eql #\) c))
 	       (if (not (eql last nil))
 		   (setf result (append result (list (concatenate 'string temp) c))
 			 temp nil
@@ -73,12 +77,18 @@
 		   (setf result (append result (list (concatenate 'string temp)))
 			 temp nil
 			 last nil)))
+	      ((eql #\" c)
+	       (setf result (append result (list (concatenate 'string temp)))
+			 temp (append temp (list c))
+			 last c
+			 in-str-flag (not in-str-flag)
+			 ))
 	      (t
 	       (setf temp (append temp (list c))
 		     last c)))
      finally (return-from scan-code-block result)))
 
-
+#|
 (setf *scope-table* (make-hash-table :test 'equal)
       *scope-dependency-table* (make-hash-table :test 'equal)
       *scope-stack* (list (make-symbol "Adam"))
@@ -90,7 +100,7 @@
 		       *scope-dependency-table*)
 
 ;; should in io.lisp
-#|
+
 (defun read-code (filepath)
   (with-open-file (in filepath)
     (do ((line (read-line in) (read-line in))
