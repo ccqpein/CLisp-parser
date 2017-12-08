@@ -2,3 +2,5 @@ GPATH
 GRTAGS
 GTAGS
 *.fasl
+*.ccq
+.DS_Store
