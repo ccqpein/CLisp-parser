@@ -62,8 +62,14 @@
      with in-str-flag = nil
      for c across code
      do (cond (in-str-flag
-	       (setf temp (append temp (list c))
-		     last c))
+	       (if (not (eql #\" c))
+		   (setf temp (append temp (list c))
+			 last c)
+		   (setf temp (append temp (list c))
+			 result (append result (list (concatenate 'string temp)))
+			 temp nil
+			 last nil
+			 in-str-flag (not in-str-flag))))
 	      ((or (eql #\( c) (eql #\) c))
 	       (if (not (eql last nil))
 		   (setf result (append result (list (concatenate 'string temp) c))
@@ -78,11 +84,12 @@
 			 temp nil
 			 last nil)))
 	      ((eql #\" c)
-	       (setf result (append result (list (concatenate 'string temp)))
-			 temp (append temp (list c))
-			 last c
-			 in-str-flag (not in-str-flag)
-			 ))
+	       (setf result (append result
+				    (if temp (list (concatenate 'string temp))))
+		     temp (append temp (list c))
+		     last c
+		     in-str-flag (not in-str-flag)
+		     ))
 	      (t
 	       (setf temp (append temp (list c))
 		     last c)))
