@@ -25,6 +25,7 @@
 	    (append (gethash key table) (list eles)))))
 
 ;; maybe recursive do not have good expressiveness here.
+;;:= DEBUG: ;; part
 (defun scan-and-update-scope (elis stack table dep)
   (cond ((eql nil elis)
 	 stack) ; setf no side effect, so return stack to keep stack state
