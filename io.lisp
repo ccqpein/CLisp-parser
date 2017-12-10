@@ -1,4 +1,4 @@
-(load "/Users/cchen386/Desktop/CLisp-parser/parser.fasl")
+(load "/Users/ccQ/Desktop/CLisp-parser/parser.fasl")
 
 (defpackage #:parser-io
   (:use #:CL #:parser-parser))
@@ -25,4 +25,4 @@
 ))
 
 ; debug scan-code-block
-;(read-code "./parser.lisp")
+(read-code "./parser.lisp")

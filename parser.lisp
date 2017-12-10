@@ -53,6 +53,7 @@
 				  table)
 				dep))))
 
+;; DEBUG: if EOF is not \n or \space will lose last word
 (defun scan-code-block (code)
   "cut code to a list including all symbol/word"
   (loop
