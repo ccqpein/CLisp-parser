@@ -6,10 +6,12 @@
 
 (in-package #:parser-parser)
 
+
 (defvar *test* "(a b (c))")
 (defvar *test1* "(a b ((c d (e 4)))")
 (defvar *test2* "( ( aa (a) a aa ))))")
 (defvar *test3* "( ( aa (a) a aa )) (c d (b) (d))")
+(defvar *test4* "(( da ee da ) ; )))")
 
 
 (defvar *scope-table* (make-hash-table :test 'equal))
@@ -23,6 +25,7 @@
 	    (append (gethash key table) eles))
       (setf (gethash key table)
 	    (append (gethash key table) (list eles)))))
+
 
 ;; maybe recursive do not have good expressiveness here.
 ;;:= DEBUG: ;; part
@@ -54,48 +57,50 @@
 				  table)
 				dep))))
 
-;; DEBUG: if EOF is not \n or \space will lose last word
-(defun scan-code-block (code)
-  "cut code to a list including all symbol/word"
-  (loop
-     with result = '()
-     with temp = '()
-     with last = nil
-     with in-str-flag = nil
-     for c across code
-     do (cond (in-str-flag
-	       (if (not (eql #\" c))
-		   (setf temp (append temp (list c))
-			 last c)
-		   (setf temp (append temp (list c))
+
+(defun scan-code-block (code-line)
+  (let ((code-char-list
+	  (append (concatenate 'list code-line)
+		  (list #\linefeed)))
+	(in-str-flag 'nil))
+    (do* ((code-chars code-char-list (cdr code-chars))
+	  (this-char (car code-chars) (car code-chars))
+	  (result '())
+	  (temp '())
+	  (last nil))
+	 ((null code-chars) result)
+      (cond (in-str-flag
+	       (if (not (eql #\" this-char))
+		   (setf temp (append temp (list this-char))
+			 last this-char)
+		   (setf temp (append temp (list this-char))
 			 result (append result (list (concatenate 'string temp)))
 			 temp nil
 			 last nil
 			 in-str-flag (not in-str-flag))))
-	      ((or (eql #\( c) (eql #\) c))
-	       (if (not (eql last nil))
-		   (setf result (append result (list (concatenate 'string temp) c))
-			 temp nil
-			 last nil)
-		   (setf result (append result (list c))
-			 last nil
-			 )))
-	      ((or (eql #\  c) (eql #\tab c))
-	       (if (not (eql last nil))
-		   (setf result (append result (list (concatenate 'string temp)))
-			 temp nil
-			 last nil)))
-	      ((eql #\" c)
-	       (setf result (append result
-				    (if temp (list (concatenate 'string temp))))
-		     temp (append temp (list c))
-		     last c
-		     in-str-flag (not in-str-flag)
-		     ))
-	      (t
-	       (setf temp (append temp (list c))
-		     last c)))
-     finally (return-from scan-code-block result)))
+	    ((equal this-char #\;)
+	     (setf code-chars '()))
+	    ((or (eql #\( this-char) (eql #\) this-char))
+	     (if (not (eql last nil))
+		 (setf result (append result (list (concatenate 'string temp) this-char))
+		       temp nil
+		       last nil)
+		 (setf result (append result (list this-char))
+		       last nil
+		       )))
+	    ((or (eql #\  this-char) (eql #\tab this-char) (eql #\linefeed this-char))
+	     (if (not (eql last nil))
+		 (setf result (append result (list (concatenate 'string temp)))
+		       temp nil
+		       last nil)))
+	    ((eql #\" this-char)
+	     (setf result (append result (if temp (list (concatenate 'string temp))))
+		   temp (append temp (list this-char))
+		   last this-char
+		   in-str-flag (not in-str-flag)))
+	    (t
+	       (setf temp (append temp (list this-char))
+		     last this-char))))))
 
 #|
 (setf *scope-table* (make-hash-table :test 'equal)
@@ -125,6 +130,7 @@
 (read-code "./parser.lisp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 |#
+
 (with-open-file (f "./table.ccq"
                      :direction :output
                      :if-exists :supersede
