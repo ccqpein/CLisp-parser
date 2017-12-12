@@ -28,7 +28,6 @@
 
 
 ;; maybe recursive do not have good expressiveness here.
-;;:= DEBUG: ;; part
 (defun scan-and-update-scope (elis stack table dep)
   (cond ((eql nil elis)
 	 stack) ; setf no side effect, so return stack to keep stack state
@@ -130,12 +129,3 @@
 (read-code "./parser.lisp")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 |#
-
-(with-open-file (f "./table.ccq"
-                     :direction :output
-                     :if-exists :supersede
-                     :if-does-not-exist :create)
-  (loop for key being the hash-keys of *scope-table*
-     using (hash-value value)
-     do (format f "~a~%" (list key value))))
-
