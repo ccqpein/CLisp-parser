@@ -100,32 +100,3 @@
 	    (t
 	       (setf temp (append temp (list this-char))
 		     last this-char))))))
-
-#|
-(setf *scope-table* (make-hash-table :test 'equal)
-      *scope-dependency-table* (make-hash-table :test 'equal)
-      *scope-stack* (list (make-symbol "Adam"))
-      )
-
-(scan-and-update-scope (scan-code-block *test2*)
-		       *scope-stack*
-		       *scope-table*
-		       *scope-dependency-table*)
-
-;; should in io.lisp
-
-(defun read-code (filepath)
-  (with-open-file (in filepath)
-    (do ((line (read-line in) (read-line in))
-	 (stack (list (make-symbol "Adam"))))
-	((null line))
-      (setf stack
-	    (scan-and-update-scope (scan-code-block line)
-				   stack
-				   *scope-table*
-				   *scope-dependency-table*)))
-))
-
-(read-code "./parser.lisp")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-|#
