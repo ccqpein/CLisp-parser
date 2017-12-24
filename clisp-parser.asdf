@@ -1,0 +1,18 @@
+;;;; -*- Mode: Lisp; Syntax: ANSI-Common-Lisp; Base: 10 -*-
+
+(defpackage #:clisp-parser-asdf
+  (:use #:CL #:asdf)
+)
+
+(in-package #:clisp-parser-asdf)
+
+(defsystem clisp-parser
+    :name "clisp-parser"
+    :version "0.1"
+    :maintainer "ccQpein"
+    :author "ccQpein"
+    :components ((:file "parser")
+                 (:file "io"
+                        :depends-on ("parser"))
+		 )
+    )

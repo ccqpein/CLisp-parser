@@ -1,5 +1,3 @@
-(load "/Users/cchen386/Desktop/CLisp-parser/parser.fasl")
-
 (defpackage #:parser-io
   (:use #:CL #:parser-parser))
 
