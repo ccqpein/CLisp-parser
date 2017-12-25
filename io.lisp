@@ -1,5 +1,8 @@
 (defpackage #:parser-io
-  (:use #:CL #:parser-parser))
+  (:use #:CL #:parser-parser)
+  (:export #:read-code
+	   #:write-ccq-file
+	   ))
 
 (in-package #:parser-io)
 
@@ -8,6 +11,7 @@
 ;;:= TODO: need to read several files in ASDF/package struct.
 (defvar *scope-table* (make-hash-table :test 'equal))
 (defvar *scope-dependency-table* (make-hash-table :test 'equal))
+
 
 (setf *scope-table* (make-hash-table :test 'equal)
       *scope-dependency-table* (make-hash-table :test 'equal)
@@ -26,7 +30,7 @@
 				   *scope-dependency-table*)))
 ))
 
-
+;; read code from 
 (read-code "./parser.lisp")
 
 
@@ -50,4 +54,3 @@
 
 (write-ccq-file *scope-table* *scope-dependency-table*)
 ; debug scan-code-block
-

@@ -7,18 +7,6 @@
 (in-package #:parser-parser)
 
 
-(defvar *test* "(a b (c))")
-(defvar *test1* "(a b ((c d (e 4)))")
-(defvar *test2* "( ( aa (a) a aa ))))")
-(defvar *test3* "( ( aa (a) a aa )) (c d (b) (d))")
-(defvar *test4* "(( da ee da ) ; )))")
-
-
-(defvar *scope-table* (make-hash-table :test 'equal))
-(defvar *scope-dependency-table* (make-hash-table :test 'equal))
-(defvar *scope-stack* (list (make-symbol "Adam")))
-
-
 (defun update-list-in-hashtabe (key table eles)
   (if (eql 'CONS (type-of eles))
       (setf (gethash key table)
@@ -27,8 +15,8 @@
 	    (append (gethash key table) (list eles)))))
 
 
-;; maybe recursive do not have good expressiveness here.
 (defun scan-and-update-scope (elis stack table dep)
+  "update stack, scope table, and dependency table with code list"
   (cond ((eql nil elis)
 	 stack) ; setf no side effect, so return stack to keep stack state
 	((eql #\( (car elis)) ;; need more test
@@ -58,6 +46,7 @@
 
 
 (defun scan-code-block (code-line)
+  "cut a line of code to list"
   (let ((code-char-list
 	  (append (concatenate 'list code-line)
 		  (list #\linefeed)))
