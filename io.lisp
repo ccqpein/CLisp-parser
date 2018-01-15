@@ -30,10 +30,6 @@
 				   *scope-dependency-table*)))
 ))
 
-;; read code from 
-(read-code "./parser.lisp")
-
-
 (defun write-ccq-file (scope dependency)
   (with-open-file (f "./table.ccq"
 		     :direction :output
@@ -49,8 +45,5 @@
     (loop
       for key being the hash-keys of dependency
 	using (hash-value value)
-      do (format f "~a~%" (list key value)))))
+      do (format f "~A~%" (list key value)))))
 
-
-(write-ccq-file *scope-table* *scope-dependency-table*)
-; debug scan-code-block

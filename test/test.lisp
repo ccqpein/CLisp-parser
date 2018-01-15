@@ -9,3 +9,8 @@
 (defvar *test2* "( ( aa (a) a aa ))))")
 (defvar *test3* "( ( aa (a) a aa )) (c d (b) (d))")
 (defvar *test4* "(( da ee da ) ; )))")
+
+(read-code "./testcase0.lisp")
+
+(write-ccq-file parser-io::*scope-table*
+		parser-io::*scope-dependency-table*)
