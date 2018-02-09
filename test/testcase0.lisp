@@ -1,3 +1,3 @@
-(func helloWorld:string (s:string)
+(func helloWorld(s:string) -> string
       (fmt.Println "hello world" s)
       (return "waahaha"))
