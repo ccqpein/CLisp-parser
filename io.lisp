@@ -13,11 +13,13 @@
 (defvar *scope-dependency-table* (make-hash-table :test 'equal))
 
 
+;; make global var: two table
 (setf *scope-table* (make-hash-table :test 'equal)
       *scope-dependency-table* (make-hash-table :test 'equal)
       )
 
 
+;; read lisp file and create two table
 (defun read-code (filepath)
   (with-open-file (in filepath)
     (do ((line (read-line in 'nil) (read-line in 'nil))
@@ -29,6 +31,7 @@
 				   *scope-table*
 				   *scope-dependency-table*)))
 ))
+
 
 (defun write-ccq-file (scope dependency)
   (with-open-file (f "./table.ccq"

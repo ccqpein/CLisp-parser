@@ -46,7 +46,7 @@
 
 
 (defun scan-code-block (code-line)
-  "cut a line of code to list"
+  "cut a line of code to list of '(', ')', words or some other symbols"
   (let ((code-char-list
 	  (append (concatenate 'list code-line)
 		  (list #\linefeed)))
@@ -57,7 +57,7 @@
 	  (temp '())
 	  (last nil))
 	 ((null code-chars) result)
-      (cond (in-str-flag
+      (cond (in-str-flag ; if cursor in processing scan string
 	       (if (not (eql #\" this-char))
 		   (setf temp (append temp (list this-char))
 			 last this-char)
@@ -66,9 +66,9 @@
 			 temp nil
 			 last nil
 			 in-str-flag (not in-str-flag))))
-	    ((equal this-char #\;)
+	    ((equal this-char #\;) ; if in comment
 	     (setf code-chars '()))
-	    ((or (eql #\( this-char) (eql #\) this-char))
+	    ((or (eql #\( this-char) (eql #\) this-char)) ; if find ( or ), wrap word and push into result
 	     (if (not (eql last nil))
 		 (setf result (append result (list (concatenate 'string temp) this-char))
 		       temp nil
