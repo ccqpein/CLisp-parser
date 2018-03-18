@@ -7,6 +7,6 @@
       (return "waahaha"))
 
 (struct Test1
-	(A:string
+	'(A:string
 	 B:string
 	 C:int))

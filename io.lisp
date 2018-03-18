@@ -2,11 +2,12 @@
   (:use #:CL #:parser-parser)
   (:export #:read-code
 	   #:write-ccq-file
+	   #:write-ccq-file-with-filename
 	   ))
 
 (in-package #:parser-io)
 
-
+(defvar filename "./table.ccq")
 ;;:= TODO: need move this variables to global env.
 ;;:= TODO: need to read several files in ASDF/package struct.
 (defvar *scope-table* (make-hash-table :test 'equal))
@@ -34,7 +35,7 @@
 
 
 (defun write-ccq-file (scope dependency)
-  (with-open-file (f "./table.ccq"
+  (with-open-file (f filename
 		     :direction :output
 		     :if-exists :supersede
 		     :if-does-not-exist :create)
@@ -50,3 +51,6 @@
 	using (hash-value value)
       do (format f "~A~%" (list key value)))))
 
+
+(defun write-ccq-file-with-filename (filename scope dependency)
+  (write-ccq-file scope dependency))

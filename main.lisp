@@ -12,7 +12,10 @@
   (read-code (cadr sb-ext:*posix-argv*))
   (write-ccq-file parser-io::*scope-table*
 		  parser-io::*scope-dependency-table*)
-  (format t "./table.ccq")
+  #|(write-ccq-file-with-filename "./table1.ccq"
+				parser-io::*scope-table*
+				parser-io::*scope-dependency-table*)|#
+
   )
 
 (main)
