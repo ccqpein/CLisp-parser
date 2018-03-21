@@ -12,6 +12,7 @@
     :version "0.1"
     :maintainer "ccQpein"
     :author "ccQpein"
+    :depends-on (:cl-fad) ;; use cl-fad
     :components ((:file "parser")
                  (:file "io"
                         :depends-on ("parser"))
