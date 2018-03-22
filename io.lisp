@@ -19,6 +19,8 @@
       *scope-dependency-table* (make-hash-table :test 'equal)
       )
 
+(defun all-files-in-folder (folderpath)
+  (cl-fad:walk-directory folderpath #'print))
 
 ;; read lisp file and create two table
 (defun read-code (filepath)
