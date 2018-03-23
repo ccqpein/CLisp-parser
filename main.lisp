@@ -1,5 +1,6 @@
 #!/usr/local/bin/sbcl --script
 
+(ql:quickload "cl-fad")
 (load "./parser.lisp")
 (load "./io.lisp")
 
@@ -15,8 +16,6 @@
   #|(write-ccq-file-with-filename "./table1.ccq"
 				parser-io::*scope-table*
 				parser-io::*scope-dependency-table*)|#
-
   )
 
 (main)
-
