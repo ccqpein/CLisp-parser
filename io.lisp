@@ -7,9 +7,9 @@
 
 (in-package #:parser-io)
 
-(defvar filename "./table.ccq")
-;;:= TODO: need move this variables to global env.
-;;:= TODO: need to read several files in ASDF/package struct.
+(defvar output-filename "./table.ccq")
+(defvar default-filetype ".lisp")
+
 (defvar *scope-table* (make-hash-table :test 'equal))
 (defvar *scope-dependency-table* (make-hash-table :test 'equal))
 
@@ -19,8 +19,14 @@
       *scope-dependency-table* (make-hash-table :test 'equal)
       )
 
+
 (defun all-files-in-folder (folderpath)
-  (cl-fad:walk-directory folderpath #'print))
+  (let (files)
+    (cl-fad:walk-directory folderpath #'(lambda (x) (push x files))
+			  :test 'pathnamep
+			   )
+    (maplist #'pathname-name files)))
+
 
 ;; read lisp file and create two table
 (defun read-code (filepath)
@@ -37,7 +43,7 @@
 
 
 (defun write-ccq-file (scope dependency)
-  (with-open-file (f filename
+  (with-open-file (f output-filename
 		     :direction :output
 		     :if-exists :supersede
 		     :if-does-not-exist :create)
