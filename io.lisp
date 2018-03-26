@@ -8,7 +8,7 @@
 (in-package #:parser-io)
 
 (defvar output-filename "./table.ccq")
-(defvar default-filetype ".lisp")
+(defvar filter-filetype "lisp")
 
 (defvar *scope-table* (make-hash-table :test 'equal))
 (defvar *scope-dependency-table* (make-hash-table :test 'equal))
@@ -21,11 +21,17 @@
 
 
 (defun all-files-in-folder (folderpath)
-  (let (files)
+  "return list of turple of path and filename"
+  (let* (files
+	 (base-directory (pathname-directory (truename folderpath)))
+	 (sub-ind (- (length base-directory) 1)))
     (cl-fad:walk-directory folderpath #'(lambda (x) (push x files))
-			  :test 'pathnamep
+			   :test #'(lambda (x) (equal filter-filetype (pathname-type x)))
 			   )
-    (maplist #'pathname-name files)))
+    (mapcar #'(lambda (x)
+		(cons (subseq (pathname-directory x) sub-ind)
+		      (pathname-name x)))
+	    files)))
 
 
 ;; read lisp file and create two table
@@ -38,8 +44,7 @@
 	    (scan-and-update-scope (scan-code-block line)
 				   stack
 				   *scope-table*
-				   *scope-dependency-table*)))
-))
+ 				   *scope-dependency-table*)))))
 
 
 (defun write-ccq-file (scope dependency)
