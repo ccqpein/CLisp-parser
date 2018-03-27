@@ -65,5 +65,6 @@
       do (format f "~A~%" (list key value)))))
 
 
+;; re-binding filename
 (defun write-ccq-file-with-filename (filename scope dependency)
   (write-ccq-file scope dependency))

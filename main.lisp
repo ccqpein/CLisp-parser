@@ -1,4 +1,4 @@
-#!/usr/local/bin/sbcl --script
+#!/usr/local/bin/sbcl
 
 (ql:quickload "cl-fad")
 (load "./parser.lisp")
