@@ -9,6 +9,9 @@
 
 (in-package #:parser-main)
 
+(defun directory-or-file (input)
+  )
+
 (defun main ()
   (read-code (cadr sb-ext:*posix-argv*))
   (write-ccq-file parser-io::*scope-table*
