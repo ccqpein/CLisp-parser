@@ -16,6 +16,6 @@
     :components ((:file "parser")
                  (:file "io"
                         :depends-on ("parser"))
-		 (:file "test/test"
-			:depends-on ("parser" "io")))
+		         (:file "test/test"
+			            :depends-on ("parser" "io")))
     )
